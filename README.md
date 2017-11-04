@@ -27,3 +27,4 @@ You can simply install it this way:
     export PATH
 
 Relogging may be required.
+And that's all, should be working by now.
