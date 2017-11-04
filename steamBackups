@@ -1,0 +1,133 @@
+#!/bin/bash
+
+source fileBrowser
+
+STEAM_DIR="/home/marioc/.steam/steam/steamapps/common"
+BACKUP_DIR="/media/marioc/My Passport/steamBackups_fromCommandLine"
+COMMAND=(tar -I lbzip2 -cvf)
+COMMAND_RESTORE=(tar -I lbzip2 -xvf)
+EXTENSION=.tbz2
+
+function chooseSteamDirectory() {
+    menutitle="File Selection Menu"
+    startdir="$STEAM_DIR"
+    filext=''
+
+    Filebrowser "$menutitle" "$startdir"
+}
+
+function backupGame() {
+
+    local i=0
+
+    for name in $STEAM_DIR/*
+    do
+	game=`echo $name | awk -F "[/]+" '{ print $NF }'`
+	files[i]="$game"	# game directory name
+	files[i+1]=""
+	files[i+2]="NO"
+	((i+=3))
+    done
+
+    OPTION=$(whiptail --title "Backup Game" \
+	--checklist "" --ok-button "Backup" --cancel-button "Back to main" \
+	22 0 16 "${files[@]}" 3>&1 1>&2 2>&3)
+
+    exitstatus=$?
+
+    if [[ $exitstatus == 0 ]] ; then
+
+	echo "creating backups..."
+
+	local IFS=$'\n'
+	NAMES=$(echo -e ${OPTION//\" \"/\"\\n\"})
+	for name in $NAMES; do
+	    name=${name:1:-1}
+	    src=$STEAM_DIR/$name
+	    dst=$BACKUP_DIR/$name$EXTENSION
+	    time ${COMMAND[@]} "$dst" "$src"
+	done
+    else
+	echo "exitstatus" $exitstatus
+    fi
+}
+
+function restoreGame() {
+
+    local i=0
+
+    for name in "$BACKUP_DIR"/*
+    do
+	game=`echo $name | awk -F "[/]+" '{ print $NF }'`
+	files[i]="$game"	# game directory name
+	files[i+1]=""
+	files[i+2]="NO"
+	((i+=3))
+    done
+
+    OPTION=$(whiptail --title "Restore Game" \
+	--checklist "" --ok-button "Restore" --cancel-button "Back to main" \
+	22 0 16 "${files[@]}" 3>&1 1>&2 2>&3)
+
+    exitstatus=$?
+
+    if [[ $exitstatus == 0 ]] ; then
+	echo "restoring game:"
+	#tar -I lbzip2 -xvf The\ Talos\ Principle.tbz2 -C /home/marioc/.steam/steam/steamapps/common/
+
+	local IFS=$'\n'
+	NAMES=$(echo -e ${OPTION//\" \"/\"\\n\"})
+	for name in $NAMES; do
+	    name=${name:1:-1}
+	    src=$BACKUP_DIR/$name
+	    dst=$STEAM_DIR/
+	    time ${COMMAND_RESTORE[@]} "$src" -C "$dst"
+	done
+    else
+	echo "back to main menu"
+    fi
+}
+
+function settingsMenu() {
+    options=( \
+	    "" "Configuration:" \
+	    "" "" \
+	    "" "Steam directory:" \
+	    "1" "$STEAM_DIR" \
+	    "" "" \
+	    "" "Backup directory:" \
+	    "2" "$EXTERNAL_DIR" \
+	    )
+
+    OPTION=$(whiptail --title "Backup and Restore Steam Games" \
+	--ok-button "Wstecz" \
+	--menu "" 22 75 10 "${options[@]}" 3>&1 1>&2 2>&3)
+}
+
+function mainMenu() {
+    options=( \
+	    "" "" \
+	    "1" "Backup" \
+	    "2" "Restore"
+	    "" "" \
+	    "3" "Settings" \
+	    "" "" \
+	    "4" "Exit"
+	    )
+
+    OPTION=$(whiptail --title "Backup and Restore Steam Games" \
+	--default-item "1" --ok-button "Exit" \
+	--menu "" 14 75 7 "${options[@]}" 3>&1 1>&2 2>&3)
+}
+
+mainMenu
+
+if [[ $OPTION == 1 ]] ; then
+    backupGame
+elif [[ $OPTION == 2 ]] ; then
+    restoreGame
+elif [[ $OPTION == 3 ]] ; then
+    settingsMenu
+elif [[ $OPTION == 4 ]] ; then
+    echo "exit"
+fi
