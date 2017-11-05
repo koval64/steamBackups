@@ -9,14 +9,6 @@ COMMAND=(tar -I lbzip2 -cvf)
 COMMAND_RESTORE=(tar -I lbzip2 -xvf)
 EXTENSION=.tbz2
 
-function chooseSteamDirectory() {
-    menutitle="File Selection Menu"
-    startdir="$STEAM_DIR"
-    filext=''
-
-    Filebrowser "$menutitle" "$startdir"
-}
-
 function backupGame() {
 
     local i=0
@@ -96,11 +88,11 @@ function settingsMenu() {
 	    "1" "$STEAM_DIR" \
 	    "" "" \
 	    "" "Backup directory:" \
-	    "2" "$EXTERNAL_DIR" \
+	    "2" "$BACKUP_DIR" \
 	    )
 
     OPTION=$(whiptail --title "Backup and Restore Steam Games" \
-	--ok-button "Wstecz" \
+	--ok-button "Back" \
 	--menu "" 22 75 10 "${options[@]}" 3>&1 1>&2 2>&3)
 }
 
@@ -129,5 +121,5 @@ elif [[ $OPTION == 2 ]] ; then
 elif [[ $OPTION == 3 ]] ; then
     settingsMenu
 elif [[ $OPTION == 4 ]] ; then
-    echo "exit"
+    echo "exitting"
 fi
