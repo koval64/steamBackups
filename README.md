@@ -20,7 +20,13 @@ You can simply install it this way:
 
 2. copy files: fileSelector and steamBackups to newly created ".bin"
 
-3. add in ".profile" config file this lines:
+3. go into ".bin" folder
+
+4. chmod +x fileSelector steamBackups
+
+5. go into home directory and
+
+6. add in ".profile" config file this lines:
 
     PATH="$HOME/.bin:$PATH"
 
