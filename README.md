@@ -9,7 +9,7 @@ This script resolves this issues.
 Directly in the script you can edit variables which archive program you wanna use (ie. lbzip2, pigz, pxz) and
 what directories you wanna use. Maybe in the future usability will be extended, to distinguish files to unpack.
 
-Script don't recognize if there's a directory without game, so be carefull, and always check if game is running from steam, if it does't, delete directory before making any backups, for your own safety.
+Script don't recognize if there's a directory with uninstalled game, so be carefull, and always check if game is running from steam, if it does't, delete directory before making any backups, for your own safety.
 Best solution to this is to physically remove game directory after uninstalling the game in steam.
 
 Both files: fileSelector and steamBackups has to be in the same directory.
