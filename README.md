@@ -4,6 +4,7 @@ Visual console scipt using whiptail for backup/recovery games from steam.
 Initial version, backup and recovery working.
 
 On linux steam archive tool uses only one thread, opens up annoing window and backup multiple games into one directory.
+And what if you want to update only one of these games ?
 
 This script resolves this issues.
 Directly in the script you can edit variables which archive program you wanna use (ie. lbzip2, pigz, pxz) and
