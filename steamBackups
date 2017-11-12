@@ -38,7 +38,7 @@ function backupGame() {
 	    name=${name:1:-1}
 	    src=$STEAM_DIR/$name
 	    dst=$BACKUP_DIR/$name$EXTENSION
-	    time ${COMMAND[@]} "$dst" "$src"
+	    time ${COMMAND[@]} "$dst" -C "$STEAM_DIR" "$name"
 	done
     else
 	echo "exitstatus" $exitstatus
