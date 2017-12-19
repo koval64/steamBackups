@@ -9,8 +9,8 @@ And what if you want to update only one of these games ?
 This script resolves this issues.
 Directly in the script you can edit variables which archive program you wanna use (ie. lbzip2, pigz, pxz, by default it is lbzip2) and what directories you wanna use. Maybe in the future usability will be extended.
 
-Script don't recognize if there's a directory with uninstalled game, so be carefull, and always check if game is running from steam, if it does't, delete directory before making any backups, for your own safety.
-`Best solution to this is to physically remove game directory after uninstalling the game in steam.`
+```Script don't recognize if there's a directory with uninstalled game, so be carefull, and always check if game is running from steam, if it does't, delete directory before making any backups, for your own safety.
+Best solution to this is to physically remove game directory after uninstalling the game in steam.```
 
 
 
