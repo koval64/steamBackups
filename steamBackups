@@ -2,12 +2,44 @@
 
 source fileBrowser
 
-
 STEAM_DIR="$HOME/.steam/steam/steamapps/common"
-BACKUP_DIR="$HOME/.steam/Backups"
+BACKUP_DIR=" ### type here backup folder path    ###    i.e. /home/user/backups"
 COMMAND=(tar -I lbzip2 -cvf)
 COMMAND_RESTORE=(tar -I lbzip2 -xvf)
 EXTENSION=.tbz2
+SUMMARY=()
+INDEX=0
+
+function print_src_and_dst_dirs() {
+    echo "  Steam directory:   $STEAM_DIR"
+    echo "Backups directory:   $BACKUP_DIR"
+}
+
+function add_to_summary() {
+    local TIME=$1
+    local NAME=$2
+
+    local SS=$((TIME%60))   # get seconds
+    local TIME=$((TIME/60)) # convert to minutes
+    local MM=$((TIME%60))   # get minutes
+    local HH=$((TIME/60))   # get hours
+
+    local E1=$(printf "%02d:%02d:%02d   " "$HH" "$MM" "$SS")
+    SUMMARY[INDEX]="$E1 $NAME"
+    let INDEX=INDEX+1
+}
+
+function print_summary() {
+    for item in ${SUMMARY[*]}
+    do
+	printf "    %s\n" $item
+    done
+}
+
+function clear_summary() {
+    SUMMARY=()
+    INDEX=0
+}
 
 function backupGame() {
 
@@ -38,8 +70,15 @@ function backupGame() {
 	    name=${name:1:-1}
 	    src=$STEAM_DIR/$name
 	    dst=$BACKUP_DIR/$name$EXTENSION
+	    START=`date +"%s"`
 	    time ${COMMAND[@]} "$dst" -C "$STEAM_DIR" "$name"
+	    TIME=$((`date +"%s"` - START))
+	    add_to_summary "$TIME" "$name"
 	done
+	print_src_and_dst_dirs
+	print_summary
+	clear_summary
+	read -p "Press any key..."
     else
 	echo "exitstatus" $exitstatus
     fi
@@ -73,8 +112,15 @@ function restoreGame() {
 	    name=${name:1:-1}
 	    src=$BACKUP_DIR/$name
 	    dst=$STEAM_DIR/
+	    START=`date +"%s"`
 	    time ${COMMAND_RESTORE[@]} "$src" -C "$dst"
+	    TIME=$((`date +"%s"` - START))
+	    add_to_summary "$TIME" "$name"
 	done
+	print_summary
+	clear_summary
+	print_src_and_dst_dirs
+	read -p "Press any key..."
     else
 	echo "back to main menu"
     fi
@@ -108,18 +154,23 @@ function mainMenu() {
 	    )
 
     OPTION=$(whiptail --title "Backup and Restore Steam Games" \
-	--default-item "1" --ok-button "Exit" \
+	--default-item "4" --ok-button "Exit" \
 	--menu "" 14 75 7 "${options[@]}" 3>&1 1>&2 2>&3)
 }
 
-mainMenu
 
-if [[ $OPTION == 1 ]] ; then
-    backupGame
-elif [[ $OPTION == 2 ]] ; then
-    restoreGame
-elif [[ $OPTION == 3 ]] ; then
-    settingsMenu
-elif [[ $OPTION == 4 ]] ; then
-    echo "exitting"
-fi
+EXIT=0
+while [ $EXIT -eq 0 ]; do
+
+    mainMenu
+
+    if [[ $OPTION == 1 ]] ; then
+	backupGame
+    elif [[ $OPTION == 2 ]] ; then
+	restoreGame
+    elif [[ $OPTION == 3 ]] ; then
+	settingsMenu
+    elif [[ $OPTION == 4 ]] ; then
+	let EXIT=1
+    fi
+done
