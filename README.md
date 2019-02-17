@@ -1,16 +1,15 @@
 # steamBackups
 
-Visual console scipt using whiptail for backup/recovery games from steam. 
-Initial version, backup and recovery working.
+Visual console scipt using whiptail for backup/recovery games from steam.
 
-On linux, steam archive tool uses only one thread, opens up annoing window and backup multiple games into one directory.
+On linux, steam archive tool uses only one thread, opens up annoing window which is completely blocking steam and backup multiple games into one archive.
 And what if you want to update only one of these games ?
 
 This script resolves this issues.
 Directly in the script you can edit variables, which archive program you wanna use (ie. lbzip2, pigz, pxz, by default it is lbzip2) and what directories you wanna use. Maybe in the future usability will be extended.
 
 `After uninstalling the game in steam, always remove physically game directory.
-Script don't recognize if there's a directory with uninstalled game, so be carefull, and always check if game is running from steam, if it does't, delete directory before making any backups, for your own safety.`
+Script can't recognize if there's a directory with uninstalled game, so be carefull, and always check if game is running from steam, if it does't, delete directory before making any backups, for your own safety.`
 
 
 
