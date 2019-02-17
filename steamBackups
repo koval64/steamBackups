@@ -1,6 +1,15 @@
 #!/bin/bash
 
-source fileBrowser
+#source fileBrowser
+
+# get seconds and miliseconds from shell
+#
+# date +"%s %N"
+#
+# $IFS - international field separator - special shell variable used for
+#        word splitting after expansion and to split lines into words
+#        with the 'read' builtin command
+#
 
 STEAM_DIR="$HOME/.steam/steam/steamapps/common"
 BACKUP_DIR=" ### type here backup folder path    ###    i.e. /home/user/backups"
@@ -19,14 +28,14 @@ function add_to_summary() {
     local TIME=$1
     local NAME=$2
 
-    local SS=$((TIME%60))   # get seconds
-    local TIME=$((TIME/60)) # convert to minutes
-    local MM=$((TIME%60))   # get minutes
-    local HH=$((TIME/60))   # get hours
+          local SS=$((TIME%60))		# get seconds
+        local TIME=$((TIME/60))		# convert to minutes
+          local MM=$((TIME%60))		# get minutes
+          local HH=$((TIME/60))		# get hours
 
-    local E1=$(printf "%02d:%02d:%02d   " "$HH" "$MM" "$SS")
+          local E1=$(printf "%02d:%02d:%02d   " "$HH" "$MM" "$SS")
     SUMMARY[INDEX]="$E1 $NAME"
-    let INDEX=INDEX+1
+         let INDEX=INDEX+1
 }
 
 function print_summary() {
@@ -44,6 +53,7 @@ function clear_summary() {
 function backupGame() {
 
     local i=0
+    local files=()
 
     for name in $STEAM_DIR/*
     do
@@ -64,7 +74,7 @@ function backupGame() {
 
 	echo "creating backups..."
 
-	local IFS=$'\n'
+	IFS=$'\n'
 	NAMES=$(echo -e ${OPTION//\" \"/\"\\n\"})
 	for name in $NAMES; do
 	    name=${name:1:-1}
@@ -87,6 +97,7 @@ function backupGame() {
 function restoreGame() {
 
     local i=0
+    local files=()
 
     for name in "$BACKUP_DIR"/*
     do
@@ -106,7 +117,7 @@ function restoreGame() {
     if [[ $exitstatus == 0 ]] ; then
 	echo "restoring game:"
 
-	local IFS=$'\n'
+	IFS=$'\n'
 	NAMES=$(echo -e ${OPTION//\" \"/\"\\n\"})
 	for name in $NAMES; do
 	    name=${name:1:-1}
@@ -126,21 +137,19 @@ function restoreGame() {
     fi
 }
 
-function settingsMenu() {
-    options=( \
-	    "" "Configuration:" \
-	    "" "" \
-	    "" "Steam directory:" \
-	    "1" "$STEAM_DIR" \
-	    "" "" \
-	    "" "Backup directory:" \
-	    "2" "$BACKUP_DIR" \
-	    )
-
-    OPTION=$(whiptail --title "Backup and Restore Steam Games" \
-	--ok-button "Back" \
-	--menu "" 22 75 10 "${options[@]}" 3>&1 1>&2 2>&3)
+function settings_show() {
+     options="Configuration:\n"
+     options+="\n"
+     options+="Steam directory:\n"
+     options+="$STEAM_DIR\n"
+     options+="\n"
+     options+="Backup directory:\n"
+     options+="$BACKUP_DIR\n"
+     options+="\n"
+     OPTION=$(whiptail --msgbox "$options" 22 75 10 3>&1 1>&2 2>&3)
 }
+
+DEFAULT_ITEM="4"
 
 function mainMenu() {
     options=( \
@@ -148,13 +157,13 @@ function mainMenu() {
 	    "1" "Backup" \
 	    "2" "Restore"
 	    "" "" \
-	    "3" "Settings" \
+	    "3" "Show settings" \
 	    "" "" \
 	    "4" "Exit"
 	    )
 
     OPTION=$(whiptail --title "Backup and Restore Steam Games" \
-	--default-item "4" --ok-button "Exit" \
+	--default-item "$DEFAULT_ITEM" --ok-button "Exit" --nocancel \
 	--menu "" 14 75 7 "${options[@]}" 3>&1 1>&2 2>&3)
 }
 
@@ -165,12 +174,16 @@ while [ $EXIT -eq 0 ]; do
     mainMenu
 
     if [[ $OPTION == 1 ]] ; then
+	DEFAULT_ITEM="1"
 	backupGame
     elif [[ $OPTION == 2 ]] ; then
+	DEFAULT_ITEM="2"
 	restoreGame
     elif [[ $OPTION == 3 ]] ; then
-	settingsMenu
+	DEFAULT_ITEM="4"
+	settings_show
     elif [[ $OPTION == 4 ]] ; then
+	DEFAULT_ITEM="4"
 	let EXIT=1
     fi
 done
