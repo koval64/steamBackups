@@ -19,11 +19,11 @@ Installing in linux based systems
 
 1. create `.bin` folder in your home directory
 
-2. copy files: `fileSelector` and `steamBackups` to newly created `.bin`
+2. copy file: `steamBackups` to newly created `.bin`
 
 3. go into `.bin` folder
 
-4. `chmod +x fileSelector steamBackups`
+4. `chmod +x fileSelector`
 
 5. go into home directory and
 
@@ -33,5 +33,12 @@ Installing in linux based systems
 
     export PATH
 ```
+
+7. edit script with text editor and set path for variables:
+
+    STEAM_DIR  - if is different than default
+
+    BACKUP_DIR - path to directory where backups will be stored
+
 Relogging may be required.
 And that's all, should be working by now.
