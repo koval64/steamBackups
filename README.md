@@ -22,7 +22,7 @@ Installing in linux based systems
 
 3. go into `.bin` folder
 
-4. `chmod +x fileSelector`
+4. `chmod +x steamBackups`
 
 5. go into home directory and
 
