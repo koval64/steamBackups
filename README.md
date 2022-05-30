@@ -6,7 +6,7 @@ On linux, steam archive tool uses only one thread, opens up annoing window which
 And what if you want to update only one of these games ?
 
 This script resolves this issues.
-Directly in the script you can edit variables, which archive program you wanna use (ie. lbzip2, pigz, pxz, by default it is lbzip2) and what directories you wanna use. Maybe in the future usability will be extended.
+Directly in the script you can edit variables, which archive program you wanna use (ie. lbzip2, pigz, pxz, by default it is lbzip2) and what directories you wanna use.
 
 `After uninstalling the game in steam, always remove physically game directory.
 Script can't recognize if there's a directory with uninstalled game, so be carefull, and always check if game is running from steam, if it does't, delete directory before making any backups, for your own safety.`
